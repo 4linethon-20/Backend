@@ -42,7 +42,6 @@ public class UserService implements UserDetailsService {
          throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User ID already exists.");
       }
 
-      System.out.println("Registering user: " + userDto.getUserId());
       User user = new User();
       user.setUserId(userDto.getUserId());
       user.setPassword(passwordEncoder.encode(userDto.getPassword()));
@@ -64,6 +63,11 @@ public class UserService implements UserDetailsService {
          throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password.");
       }
       return user;
+   }
+   //마이페이지 조회 기능
+   public User MyPage(String userId){
+      return userRepository.findByUserId(userId)
+            .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found."));
    }
 
 }

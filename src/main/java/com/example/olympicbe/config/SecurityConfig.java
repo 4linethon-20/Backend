@@ -35,10 +35,10 @@ public class SecurityConfig {
       http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                  .requestMatchers("/test","/**").permitAll() //인증이 필요 없이 들어갈 수 있음
+                  .requestMatchers("/test", "/**").permitAll()
                   .anyRequest().authenticated()
             )
-            .addFilterBefore(new JwtTokenFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);  // UserDetailsService 사용
+            .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class); // 기존 bean 사용
 
       return http.build();
    }

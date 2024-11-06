@@ -64,4 +64,12 @@ public class UserController {
          throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
       }
    }
+   //마이페이지 조회
+   @GetMapping("/me")
+   public ResponseEntity<User> getMyPage(Authentication authentication){
+      String userId= authentication.getName();
+      User user = userService.MyPage(userId);
+      return ResponseEntity.ok(user);
+   }
+
 }

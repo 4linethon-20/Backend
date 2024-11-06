@@ -31,16 +31,33 @@ public class JwtTokenFilter implements jakarta.servlet.Filter {
       HttpServletRequest httpRequest = (HttpServletRequest) request;
       HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-      String token = jwtTokenProvider.resolveToken(httpRequest);
-      if (token != null && jwtTokenProvider.validateToken(token)) {
-         String userId = jwtTokenProvider.getUserId(token);
-         UserDetails userDetails = userDetailsService.loadUserByUsername(userId);  // UserService 대신 UserDetailsService 사용
-         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-               userDetails, null, userDetails.getAuthorities());
-         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-         SecurityContextHolder.getContext().setAuthentication(authentication);
+      try {
+         String token = jwtTokenProvider.resolveToken(httpRequest);
+
+
+         if (token != null && jwtTokenProvider.validateToken(token)) {
+            String userId = jwtTokenProvider.getUserId(token);
+
+
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+            if (userDetails != null) {
+               UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                     userDetails, null, userDetails.getAuthorities());
+               authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
+               SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+               System.out.println("User details not found");
+            }
+         } else {
+            System.out.println("Token is invalid or not found");
+         }
+
+      } catch (Exception e) {
+         // 에러 로그 추가
+         System.out.println("JWT 검증 중 오류 발생: " + e.getMessage());
       }
 
       filterChain.doFilter(httpRequest, httpResponse);
    }
+
 }
