@@ -1,6 +1,6 @@
 package com.example.olympicbe.dto;
 
-import com.example.olympicbe.entity.Interest;
+import com.example.olympicbe.entity.Subject;
 import lombok.Data;
 
 import java.util.Set;
@@ -11,5 +11,5 @@ public class UserDTO {
    private String password;
    private String nickname;
    private String profileImage;
-   private Set<Interest> Interests;
+   private Set<Subject> subjects;
 }

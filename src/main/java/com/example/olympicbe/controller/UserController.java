@@ -4,6 +4,8 @@ import com.example.olympicbe.dto.UserDTO;
 import com.example.olympicbe.entity.User;
 import com.example.olympicbe.security.JwtTokenProvider;
 import com.example.olympicbe.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,7 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.Map;
-
+@Api(tags = "user")
 @RestController
 @RequestMapping("/members")
 public class UserController {
@@ -30,7 +32,7 @@ public class UserController {
       this.jwtTokenProvider=jwtTokenProvider;
       this.authenticationManager=authenticationManager;
    }
-
+   @ApiOperation(value = "회원가입", notes = "This is a sample GET method")
    @PostMapping("/register")
    public ResponseEntity<User> registerUser(@RequestBody UserDTO userDto){
       User registeredUser = userService.registerUser(userDto);

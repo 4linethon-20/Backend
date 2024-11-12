@@ -33,11 +33,11 @@ public class User {
 
    @ManyToMany
    @JoinTable(
-         name = "user_interest",
+         name = "user_subject",
          joinColumns = @JoinColumn(name="user_id"),
          inverseJoinColumns = @JoinColumn(name="hobby_id")
    )
-   private Set<Interest> interests;
+   private Set<Subject> subjects;
 
    @OneToMany(mappedBy = "user", cascade= CascadeType.ALL, fetch=FetchType.LAZY)
    private Set<Bookmark> bookmarks= new HashSet<>();

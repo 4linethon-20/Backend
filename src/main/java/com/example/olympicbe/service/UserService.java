@@ -47,7 +47,7 @@ public class UserService implements UserDetailsService {
       user.setPassword(passwordEncoder.encode(userDto.getPassword()));
       user.setProfileImage(userDto.getProfileImage());
       user.setNickname(userDto.getNickname());
-      user.setInterests(userDto.getInterests());
+      user.setSubjects(userDto.getSubjects());
 
       return userRepository.save(user);
    }

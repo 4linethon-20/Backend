@@ -4,12 +4,15 @@ import com.example.olympicbe.entity.Post;
 import com.example.olympicbe.entity.User;
 import com.example.olympicbe.repository.UserRepository;
 import com.example.olympicbe.service.BookmarkService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Api(tags = "북마크")
 @RestController
 @RequestMapping("/members/me/bookmarks")
 public class BookmarkController {
@@ -22,7 +25,7 @@ public class BookmarkController {
       this.userRepository=userRepository;
    }
 
-   // 북마크 조회
+   @ApiOperation(value = "북마크 조회", notes = "This is a sample GET method")   // 북마크 조회
    @GetMapping
    public ResponseEntity<List<Post>> getBookmarks(Authentication authentication) {
       String userId = authentication.getName();

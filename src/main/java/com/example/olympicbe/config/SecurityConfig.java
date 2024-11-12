@@ -35,7 +35,7 @@ public class SecurityConfig {
       http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                  .requestMatchers("/test", "/**").permitAll()
+                  .requestMatchers("/test", "/**","/swagger-ui/**", "/v2/api-docs", "/swagger-resources/**", "/webjars/**").permitAll()
                   .anyRequest().authenticated()
             )
             .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class); // 기존 bean 사용
@@ -52,4 +52,5 @@ public class SecurityConfig {
    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
       return authenticationConfiguration.getAuthenticationManager();
    }
+
 }

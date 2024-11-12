@@ -18,6 +18,8 @@ public class Post {
 
    private String title;
    private String content;
-
+   @ManyToOne
+   @JoinColumn(name = "subject_id")
+   private Subject subject;
    // Getter, Setter
 }

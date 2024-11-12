@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 import java.util.Set;
 
 @Entity
-@Table(name="interests")
+@Table(name="subjects")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Interest {
+public class Subject {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Integer id;
