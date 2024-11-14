@@ -1,4 +1,4 @@
-package org.example.olympic.security;
+package org.example.olympicbe.security.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

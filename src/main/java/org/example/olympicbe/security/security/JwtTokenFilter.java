@@ -1,4 +1,4 @@
-package org.example.olympic.security;
+package org.example.olympicbe.security.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
