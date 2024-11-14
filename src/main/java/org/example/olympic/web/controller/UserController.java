@@ -72,9 +72,11 @@ public class UserController {
       User user = userService.MyPage(userId);
       return ResponseEntity.ok(user);
    }
+
+
+   @GetMapping("/search")
    public ResponseEntity<List<Subject>> searchSubjects(@RequestParam("keyword") String keyword) {
       List<Subject> subjects = userService.searchSubjects(keyword);
       return ResponseEntity.ok(subjects);
    }
-
 }
