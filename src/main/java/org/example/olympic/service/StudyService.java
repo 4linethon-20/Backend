@@ -1,10 +1,10 @@
 package org.example.olympic.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.olympic.domain.Member;
+import org.example.olympic.domain.User;
 import org.example.olympic.domain.Study;
-import org.example.olympic.repository.MemberRepository;
 import org.example.olympic.repository.StudyRepository;
+import org.example.olympic.repository.UserRepository;
 import org.example.olympic.web.dto.StudyRequestDTO;
 import org.example.olympic.web.dto.StudyResponseDTO;
 import org.springframework.data.domain.PageRequest;
@@ -25,10 +25,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StudyService {
     private final StudyRepository studyRepository;
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
     private final String imagePath = "/images/studies/";
     public StudyResponseDTO createStudy(StudyRequestDTO studyRequestDTO) {
-        Member member = memberRepository.findById(studyRequestDTO.getMemberId())
+        User user = userRepository.findById(studyRequestDTO.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
         String studyImageUrl = null;
@@ -44,7 +44,7 @@ public class StudyService {
         Study study = Study.builder()
                 .title(studyRequestDTO.getTitle())
                 .content(studyRequestDTO.getContent())
-                .member(member)
+                .user(user)
                 .hashtags(studyRequestDTO.getHashtags())
                 .studyImageUrl(studyImageUrl)
                 .build();
@@ -56,7 +56,7 @@ public class StudyService {
                 .content(savedStudy.getContent())
                 .hashtags(savedStudy.getHashtags())
                 .studyImageUrl(savedStudy.getStudyImageUrl())
-                .memberProfileImageUrl(member.getProfileImageUrl())
+                .memberProfileImageUrl(user.getProfileImageUrl())
                 .createdAt(savedStudy.getCreatedAt())
                 .build();
     }
@@ -126,10 +126,10 @@ public class StudyService {
     }
     // 관심 있는 과목과 관련된 상위 3개의 공부법 조회
     public List<StudyResponseDTO> getStudiesByUserInterestSubjects(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+        User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
-        List<String> subjects = member.getSubjects();
+        List<String> subjects = user.getSubjects();
         Pageable topThree = PageRequest.of(0, 3);
 
         // Repository 메서드 호출 시 Pageable 객체 전달

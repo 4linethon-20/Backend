@@ -22,8 +22,8 @@ public class Comment extends BaseEntity {
     private Study study;
 
     @ManyToOne(fetch =FetchType.LAZY)
-    @JoinColumn(name="member_id")
-    private Member member;
+    @JoinColumn(name="user_id")
+    private User user;
 
     @Column(nullable = false)
     private int likeCount = 0;

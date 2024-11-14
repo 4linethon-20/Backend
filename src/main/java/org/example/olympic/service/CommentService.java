@@ -2,11 +2,11 @@ package org.example.olympic.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.olympic.domain.Comment;
-import org.example.olympic.domain.Member;
+import org.example.olympic.domain.User;
 import org.example.olympic.domain.Study;
 import org.example.olympic.repository.CommentRepository;
-import org.example.olympic.repository.MemberRepository;
 import org.example.olympic.repository.StudyRepository;
+import org.example.olympic.repository.UserRepository;
 import org.example.olympic.web.dto.CommentRequestDTO;
 import org.example.olympic.web.dto.CommentResponseDTO;
 import org.example.olympic.web.dto.LikeDislikeResponseDTO;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final StudyRepository studyRepository;
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
 
     // 댓글 생성
     public CommentResponseDTO createComment(CommentRequestDTO commentRequestDTO) {
@@ -30,14 +30,14 @@ public class CommentService {
                 .orElseThrow(() -> new IllegalArgumentException("Study not found"));
 
         // memberId에 해당하는 Member 객체 조회
-        Member member = memberRepository.findById(commentRequestDTO.getMemberId())
+        User user = userRepository.findById(commentRequestDTO.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
         // Comment 엔티티 생성
         Comment comment = new Comment();
         comment.setContent(commentRequestDTO.getContent());
         comment.setStudy(study);
-        comment.setMember(member);
+        comment.setUser(user);
         comment.setLikeCount(0);  // 초기 좋아요 수 설정
         comment.setDislikeCount(0);  // 초기 비추천 수 설정
 
@@ -49,7 +49,7 @@ public class CommentService {
                 study.getTitle(),
                 study.getContent(),
                 savedComment.getId(),
-                member.getNickname(),
+                user.getNickname(),
                 savedComment.getContent(),
                 savedComment.getLikeCount(),
                 savedComment.getDislikeCount()
@@ -71,7 +71,7 @@ public class CommentService {
                         study.getTitle(),
                         study.getContent(),
                         comment.getId(),
-                        comment.getMember().getNickname(),
+                        comment.getUser().getNickname(),
                         comment.getContent(),
                         comment.getLikeCount(),
                         comment.getDislikeCount()
@@ -117,7 +117,7 @@ public class CommentService {
                 comment.getStudy().getTitle(),
                 comment.getStudy().getContent(),
                 comment.getId(),
-                comment.getMember().getNickname(),
+                comment.getUser().getNickname(),
                 comment.getContent(),
                 comment.getLikeCount(),
                 comment.getDislikeCount()

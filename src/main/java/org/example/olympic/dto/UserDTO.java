@@ -1,9 +1,8 @@
 package org.example.olympic.dto;
 
 import lombok.Data;
-import org.example.olympic.domain.Subject;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 public class UserDTO {
@@ -11,5 +10,5 @@ public class UserDTO {
    private String password;
    private String nickname;
    private String profileImage;
-   private Set<Subject> subjects;
+   private List<String> subjects;
 }
