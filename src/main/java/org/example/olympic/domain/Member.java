@@ -18,6 +18,9 @@ public class Member {
     @Column
     private String nickname;
 
+    @Column
+    private String profileImageUrl;
+
     @ElementCollection
     @CollectionTable(name = "member_subjects", joinColumns = @JoinColumn(name = "member_id"))
     @Column(name = "subject")

@@ -28,6 +28,9 @@ public class Study extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @Column
+    private String studyImageUrl;
+
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
     private List<Likes> likesList = new ArrayList<>();
 

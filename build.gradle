@@ -39,7 +39,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'mysql:mysql-connector-java:8.0.29'
->>>>>>> hoonki
+
 }
 
 tasks.named('test') {

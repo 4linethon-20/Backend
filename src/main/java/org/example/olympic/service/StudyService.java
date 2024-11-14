@@ -10,8 +10,15 @@ import org.example.olympic.web.dto.StudyResponseDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,17 +26,27 @@ import java.util.stream.Collectors;
 public class StudyService {
     private final StudyRepository studyRepository;
     private final MemberRepository memberRepository;
-
+    private final String imagePath = "/images/studies/";
     public StudyResponseDTO createStudy(StudyRequestDTO studyRequestDTO) {
-        // memberId로 Member 객체 조회
         Member member = memberRepository.findById(studyRequestDTO.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
+        String studyImageUrl = null;
+        if (studyRequestDTO.getStudyImage() != null) {
+            try {
+                studyImageUrl = saveImage(studyRequestDTO.getStudyImage());
+            } catch (IOException e) {
+                e.printStackTrace();
+                // 예외 처리 로직 추가 (예: 기본 이미지 URL을 설정하거나 에러 메시지 반환)
+            }
+        }
+
         Study study = Study.builder()
-                .title(studyRequestDTO.getTitle()) // 수정
+                .title(studyRequestDTO.getTitle())
                 .content(studyRequestDTO.getContent())
                 .member(member)
                 .hashtags(studyRequestDTO.getHashtags())
+                .studyImageUrl(studyImageUrl)
                 .build();
 
         Study savedStudy = studyRepository.save(study);
@@ -38,8 +55,19 @@ public class StudyService {
                 .title(savedStudy.getTitle())
                 .content(savedStudy.getContent())
                 .hashtags(savedStudy.getHashtags())
+                .studyImageUrl(savedStudy.getStudyImageUrl())
+                .memberProfileImageUrl(member.getProfileImageUrl())
                 .createdAt(savedStudy.getCreatedAt())
                 .build();
+    }
+
+    private String saveImage(MultipartFile imageFile) throws IOException {
+        // 파일 저장 로직 구현 (예: 로컬 파일 시스템 또는 AWS S3)
+        // 여기서는 간단히 파일 경로를 리턴하는 예를 들겠습니다.
+        String filename = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
+        Path filepath = Paths.get(imagePath, filename);
+        Files.copy(imageFile.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
+        return filepath.toString();
     }
 
     public StudyResponseDTO getStudy(Long studyId) {
