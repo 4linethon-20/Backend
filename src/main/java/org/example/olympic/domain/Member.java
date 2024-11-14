@@ -10,10 +10,17 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Table(name ="members")
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "member_id", length= 20, nullable = false, unique= true)
+    private String userId;
+
+    @Column(nullable = false)
+    private String password;
 
     @Column
     private String nickname;
