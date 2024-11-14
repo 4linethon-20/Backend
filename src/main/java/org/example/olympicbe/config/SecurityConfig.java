@@ -1,11 +1,9 @@
-<<<<<<< Updated upstream:src/main/java/org/example/olympicbe/config/SecurityConfig.java
-package org.example.olympicbe.config;
-=======
-package com.example.olympicbe.config;
->>>>>>> Stashed changes:src/main/java/org/example/olympic/config/SecurityConfig.java
 
-import com.example.olympicbe.security.JwtTokenFilter;
-import com.example.olympicbe.security.JwtTokenProvider;
+package org.example.olympicbe.config;
+
+
+import org.example.olympicbe.security.JwtTokenFilter;
+import org.example.olympicbe.security.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
