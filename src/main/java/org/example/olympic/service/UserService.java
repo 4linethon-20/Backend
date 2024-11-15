@@ -1,26 +1,36 @@
 package org.example.olympic.service;
 
 
+import org.example.olympic.domain.Subject;
 import org.example.olympic.domain.User;
 import org.example.olympic.dto.UserDTO;
+import org.example.olympic.repository.SubjectRepository;
 import org.example.olympic.repository.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
 
    private final UserRepository userRepository;
+   private final SubjectRepository subjectRepository;
    private final PasswordEncoder passwordEncoder;
 
-   public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
+
+   public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, SubjectRepository subjectRepository){
       this.userRepository=userRepository;
       this.passwordEncoder=passwordEncoder;
+      this.subjectRepository=subjectRepository;
    }
 
    @Override
@@ -39,7 +49,7 @@ public class UserService implements UserDetailsService {
    //회원가입 기능
    public User registerUser(UserDTO userDto){
       if(userRepository.existsByUserId(userDto.getUserId())){
-         System.out.println("aleradyr: " );
+         System.out.println("already registered: " );
          throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User ID already exists.");
       }
 
@@ -48,8 +58,17 @@ public class UserService implements UserDetailsService {
       user.setPassword(passwordEncoder.encode(userDto.getPassword()));
       user.setProfileImageUrl(userDto.getProfileImage());
       user.setNickname(userDto.getNickname());
-      user.setSubjects(userDto.getSubjects());
+
+      List<Subject> subjects = userDto.getSubjects().stream()
+            .map(subjectName -> subjectRepository.findBySubjectNameContainingIgnoreCase(subjectName))
+                  .flatMap(List::stream).collect(Collectors.toList());
+
       return userRepository.save(user);
+   }
+
+   // 과목 검색
+   public List<Subject> searchSubjects(String keyword) {
+      return subjectRepository.findBySubjectNameContainingIgnoreCase(keyword);
    }
    //아이디 중복 체크 기능
    public boolean checkUserId(UserDTO userDto){
@@ -69,5 +88,4 @@ public class UserService implements UserDetailsService {
       return userRepository.findByUserId(userId)
             .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found."));
    }
-
 }

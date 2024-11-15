@@ -41,4 +41,8 @@ public class Study extends BaseEntity {
     @CollectionTable(name = "study_hashtags", joinColumns = @JoinColumn(name = "study_id"))
     @Column(name = "hashtag")
     private List<String> hashtags;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id")  // 외래키 컬럼 이름 설정
+    private Subject subject;
 }

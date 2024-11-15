@@ -1,5 +1,6 @@
 package org.example.olympic.web.controller;
 
+import org.example.olympic.domain.Subject;
 import org.example.olympic.domain.User;
 import org.example.olympic.dto.UserDTO;
 import org.example.olympic.security.JwtTokenProvider;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -72,4 +74,10 @@ public class UserController {
       return ResponseEntity.ok(user);
    }
 
+
+   @GetMapping("/search")
+   public ResponseEntity<List<Subject>> searchSubjects(@RequestParam("keyword") String keyword) {
+      List<Subject> subjects = userService.searchSubjects(keyword);
+      return ResponseEntity.ok(subjects);
+   }
 }
