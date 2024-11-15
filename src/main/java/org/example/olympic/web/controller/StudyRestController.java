@@ -2,11 +2,13 @@ package org.example.olympic.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.example.olympic.service.StudyService;
 import org.example.olympic.web.dto.StudyRequestDTO;
 import org.example.olympic.web.dto.StudyResponseDTO;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,13 +16,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/studyMethod")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class StudyRestController {
     private final StudyService studyService;
     @PostMapping
     @Operation(summary = "공부법 작성", description = "공부법 게시물 작성")
-    public ResponseEntity<StudyResponseDTO> createStudy(@RequestBody StudyRequestDTO studyRequestDTO) {
-    StudyResponseDTO studyResponseDTO = studyService.createStudy(studyRequestDTO);
-    return ResponseEntity.ok(studyResponseDTO);
+    public ResponseEntity<StudyResponseDTO> createStudy(@RequestBody StudyRequestDTO studyRequestDTO, Authentication authentication) {
+        // 인증된 사용자의 ID를 가져옴
+        String userId = authentication.getName();
+
+        // 서비스 레이어에 인증된 사용자 ID 전달
+        StudyResponseDTO studyResponseDTO = studyService.createStudy(studyRequestDTO, userId);
+        return ResponseEntity.ok(studyResponseDTO);
     }
     @Operation(summary = "공부법 조회", description = "특정 공부법의 기본 정보를 조회합니다.")
     @GetMapping("/{studyId}")

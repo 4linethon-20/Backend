@@ -46,20 +46,21 @@ public class UserController {
 
    @PostMapping("/login")
    public ResponseEntity<Map<String, String>> loginUser(@RequestBody UserDTO userDto) throws NoSuchAlgorithmException, InvalidKeySpecException {
-      try{
-         Authentication  authentication = authenticationManager.authenticate(
-               new UsernamePasswordAuthenticationToken(userDto.getUserId(),userDto.getPassword())
+      try {
+         // 사용자 인증
+         Authentication authentication = authenticationManager.authenticate(
+                 new UsernamePasswordAuthenticationToken(userDto.getUserId(), userDto.getPassword())
          );
 
          // 인증 성공 시 JWT 토큰 생성
          String jwtToken = jwtTokenProvider.createToken(authentication.getName());
 
-         // Map형태의 토큰으로 반환
+         // 토큰을 Map 형태로 반환
          Map<String, String> response = new HashMap<>();
          response.put("token", jwtToken);
 
          return ResponseEntity.ok(response);
-      }catch(AuthenticationException ex){
+      } catch (AuthenticationException ex) {
          throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
       }
    }

@@ -26,27 +26,16 @@ import java.util.stream.Collectors;
 public class StudyService {
     private final StudyRepository studyRepository;
     private final UserRepository userRepository;
-    private final String imagePath = "/images/studies/";
-    public StudyResponseDTO createStudy(StudyRequestDTO studyRequestDTO) {
-        User user = userRepository.findById(studyRequestDTO.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
-
-        String studyImageUrl = null;
-        if (studyRequestDTO.getStudyImage() != null) {
-            try {
-                studyImageUrl = saveImage(studyRequestDTO.getStudyImage());
-            } catch (IOException e) {
-                e.printStackTrace();
-                // 예외 처리 로직 추가 (예: 기본 이미지 URL을 설정하거나 에러 메시지 반환)
-            }
-        }
+    public StudyResponseDTO createStudy(StudyRequestDTO studyRequestDTO, String userId) {
+        // userId를 사용하여 인증된 사용자 데이터를 처리
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Study study = Study.builder()
                 .title(studyRequestDTO.getTitle())
                 .content(studyRequestDTO.getContent())
                 .user(user)
                 .hashtags(studyRequestDTO.getHashtags())
-                .studyImageUrl(studyImageUrl)
                 .build();
 
         Study savedStudy = studyRepository.save(study);
@@ -55,20 +44,12 @@ public class StudyService {
                 .title(savedStudy.getTitle())
                 .content(savedStudy.getContent())
                 .hashtags(savedStudy.getHashtags())
-                .studyImageUrl(savedStudy.getStudyImageUrl())
-                .memberProfileImageUrl(user.getProfileImageUrl())
+//                .memberProfileImageUrl(user.getProfileImageUrl())
                 .createdAt(savedStudy.getCreatedAt())
                 .build();
     }
 
-    private String saveImage(MultipartFile imageFile) throws IOException {
-        // 파일 저장 로직 구현 (예: 로컬 파일 시스템 또는 AWS S3)
-        // 여기서는 간단히 파일 경로를 리턴하는 예를 들겠습니다.
-        String filename = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
-        Path filepath = Paths.get(imagePath, filename);
-        Files.copy(imageFile.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
-        return filepath.toString();
-    }
+
 
     public StudyResponseDTO getStudy(Long studyId) {
         Study study = studyRepository.findById(studyId)
