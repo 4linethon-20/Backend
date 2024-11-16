@@ -25,8 +25,16 @@ public class Study extends BaseEntity {
     private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
+<<<<<<< Updated upstream
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+=======
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Column
+    private String studyImageUrl;
+>>>>>>> Stashed changes
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
     private List<Likes> likesList = new ArrayList<>();
@@ -38,4 +46,11 @@ public class Study extends BaseEntity {
     @CollectionTable(name = "study_hashtags", joinColumns = @JoinColumn(name = "study_id"))
     @Column(name = "hashtag")
     private List<String> hashtags;
+<<<<<<< Updated upstream
+=======
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id")  // 외래키 컬럼 이름 설정
+    private Subject subject;
+>>>>>>> Stashed changes
 }
