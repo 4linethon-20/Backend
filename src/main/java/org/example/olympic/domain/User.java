@@ -1,6 +1,6 @@
 package org.example.olympic.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -36,8 +36,8 @@ public class User {
     @Column(name = "subject")
     private List<String> subjects = new ArrayList<>();
 
-    @OneToMany(mappedBy="user", cascade=CascadeType.ALL)
     @JsonManagedReference
+    @OneToMany(mappedBy="user", cascade=CascadeType.ALL)
     private List<Study> studyList = new ArrayList<>();
 
 }

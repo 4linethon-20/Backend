@@ -1,5 +1,6 @@
 package org.example.olympic.domain;
 
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,7 +26,8 @@ public class Study extends BaseEntity {
     @Column(nullable = false, length = 60)
     private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private User user;

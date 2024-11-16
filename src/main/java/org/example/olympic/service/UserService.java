@@ -3,6 +3,7 @@ package org.example.olympic.service;
 
 import org.example.olympic.domain.Subject;
 import org.example.olympic.domain.User;
+import org.example.olympic.dto.StudyDTO;
 import org.example.olympic.dto.UserDTO;
 import org.example.olympic.repository.SubjectRepository;
 import org.example.olympic.repository.UserRepository;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -83,9 +85,29 @@ public class UserService implements UserDetailsService {
       }
       return user;
    }
-   //마이페이지 조회 기능
-   public User MyPage(String userId){
-      return userRepository.findByUserId(userId)
-            .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found."));
+
+   public UserDTO MyPage(String userId) {
+      User user = userRepository.findByUserIdWithStudies(userId)
+              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+
+      List<StudyDTO> studies = user.getStudyList().stream()
+              .map(study -> new StudyDTO(
+                      study.getId(),
+                      study.getTitle(),
+                      study.getContent(),
+                      study.getStudyImageUrl(),
+                      study.getCreatedAt(),
+                      study.getUpdatedAt()))
+              .toList();
+
+      return new UserDTO(
+              user.getUserId(),
+              user.getPassword(),
+              user.getNickname(),
+              user.getProfileImageUrl(),
+              user.getSubjects(),
+              studies
+      );
    }
+
 }
