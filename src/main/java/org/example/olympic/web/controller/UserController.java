@@ -1,5 +1,8 @@
 package org.example.olympic.web.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import org.example.olympic.domain.Subject;
 import org.example.olympic.domain.User;
 import org.example.olympic.dto.RegisterDTO;
@@ -38,14 +41,22 @@ public class UserController {
    }
    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
    public ResponseEntity<User> registerUser(
-           @RequestPart("user") RegisterDTO registerDto,
-           @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
+           @RequestPart("user") @Valid String userJson,
+           @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) throws JsonProcessingException {
 
-
+      // JSON을 객체로 매핑
+      ObjectMapper objectMapper = new ObjectMapper();
+      RegisterDTO registerDto = objectMapper.readValue(userJson, RegisterDTO.class);
+      // 디버깅 로그 추가
+      if (profileImage != null) {
+         System.out.println("File name: " + profileImage.getOriginalFilename());
+         System.out.println("File size: " + profileImage.getSize());
+      }
       User registeredUser = userService.registerUser(registerDto, profileImage);
 
       return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
    }
+
 
 
    @GetMapping("/checkId")

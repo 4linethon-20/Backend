@@ -73,21 +73,17 @@ public class UserService implements UserDetailsService {
    }
 
    public String saveProfileImage(MultipartFile profileImage) {
-      if (profileImage.isEmpty()) {
-         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Profile image is required.");
+      if (profileImage == null || profileImage.isEmpty()) {
+         return null;
       }
-
       try {
-         // 파일 저장 경로 설정
          String uploadDir = "uploads/profile-images/";
          String fileName = UUID.randomUUID().toString() + "_" + profileImage.getOriginalFilename();
          Path filePath = Paths.get(uploadDir, fileName);
 
-         // 파일 저장
          Files.createDirectories(filePath.getParent()); // 디렉토리 생성
          profileImage.transferTo(filePath.toFile());
 
-         // 저장된 파일의 경로 반환 (예: http://localhost:8080/uploads/profile-images/{fileName})
          return "/uploads/profile-images/" + fileName;
       } catch (IOException e) {
          throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save profile image.");
