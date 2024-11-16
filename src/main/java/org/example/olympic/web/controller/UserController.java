@@ -68,10 +68,10 @@ public class UserController {
    }
    //마이페이지 조회
    @GetMapping("/me")
-   public ResponseEntity<User> getMyPage(Authentication authentication){
+   public ResponseEntity<UserDTO> getMyPage(Authentication authentication){
       String userId= authentication.getName();
-      User user = userService.MyPage(userId);
-      return ResponseEntity.ok(user);
+      UserDTO response = userService.MyPage(userId);
+      return ResponseEntity.ok(response);
    }
 
 

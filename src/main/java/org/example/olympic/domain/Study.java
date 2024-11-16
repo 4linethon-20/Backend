@@ -1,5 +1,7 @@
 package org.example.olympic.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.olympic.domain.common.BaseEntity;
@@ -24,7 +26,8 @@ public class Study extends BaseEntity {
     @Column(nullable = false, length = 60)
     private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
