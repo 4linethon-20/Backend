@@ -12,5 +12,5 @@ public class StudyRequestDTO {
     private String content;
     private List<String> hashtags;
     private Long memberId;
-    //private MultipartFile studyImage;
+    private MultipartFile studyImage;
 }
