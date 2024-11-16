@@ -1,5 +1,7 @@
 package org.example.olympic.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +37,7 @@ public class User {
     private List<String> subjects = new ArrayList<>();
 
     @OneToMany(mappedBy="user", cascade=CascadeType.ALL)
+    @JsonManagedReference
     private List<Study> studyList = new ArrayList<>();
 
 }
