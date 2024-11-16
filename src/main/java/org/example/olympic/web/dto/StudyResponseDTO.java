@@ -18,6 +18,5 @@ public class StudyResponseDTO {
     private LocalDateTime updatedAt;
     private int likesCount;
     private int commentCount;
-    //private String studyImageUrl;
-    //private String memberProfileImageUrl;
+    private String studyImageUrl;
 }

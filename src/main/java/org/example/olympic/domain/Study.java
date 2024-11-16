@@ -1,7 +1,8 @@
 package org.example.olympic.domain;
 
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.olympic.domain.common.BaseEntity;
@@ -29,10 +30,8 @@ public class Study extends BaseEntity {
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
-
-    @Column
-    private String studyImageUrl;
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
     private List<Likes> likesList = new ArrayList<>();
@@ -44,6 +43,9 @@ public class Study extends BaseEntity {
     @CollectionTable(name = "study_hashtags", joinColumns = @JoinColumn(name = "study_id"))
     @Column(name = "hashtag")
     private List<String> hashtags;
+
+    @Column
+    private String studyImageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")  // 외래키 컬럼 이름 설정
