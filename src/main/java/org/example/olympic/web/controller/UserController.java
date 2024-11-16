@@ -2,20 +2,24 @@ package org.example.olympic.web.controller;
 
 import org.example.olympic.domain.Subject;
 import org.example.olympic.domain.User;
+import org.example.olympic.dto.RegisterDTO;
 import org.example.olympic.dto.UserDTO;
 import org.example.olympic.security.JwtTokenProvider;
 import org.example.olympic.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,11 +36,17 @@ public class UserController {
       this.jwtTokenProvider=jwtTokenProvider;
       this.authenticationManager=authenticationManager;
    }
-   @PostMapping("/register")
-   public ResponseEntity<User> registerUser(@RequestBody UserDTO userDto){
-      User registeredUser = userService.registerUser(userDto);
+   @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+   public ResponseEntity<User> registerUser(
+           @RequestPart("user") RegisterDTO registerDto,
+           @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
+
+
+      User registeredUser = userService.registerUser(registerDto, profileImage);
+
       return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
    }
+
 
    @GetMapping("/checkId")
    public String checkUserId(@RequestParam UserDTO userId){

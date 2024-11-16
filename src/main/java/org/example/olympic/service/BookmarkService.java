@@ -1,8 +1,10 @@
 package org.example.olympic.service;
 
+import jakarta.transaction.Transactional;
 import org.example.olympic.domain.Bookmark;
 import org.example.olympic.domain.Study;
 import org.example.olympic.domain.User;
+import org.example.olympic.dto.BookmarkDTO;
 import org.example.olympic.repository.BookmarkRepository;
 import org.example.olympic.repository.StudyRepository;
 import org.example.olympic.repository.UserRepository;
@@ -24,17 +26,18 @@ public class BookmarkService {
         this.userRepository = userRepository;
         this.studyRepository = studyRepository;
     }
-
-    public List<Study> getUserBookmarks(Long userId) {
+    @Transactional
+    public List<BookmarkDTO> getUserBookmarks(Long userId) {
         User user = userRepository.findById(userId)
               .orElseThrow(() -> new RuntimeException("User not found"));
 
         List<Bookmark> bookmarks = bookmarkRepository.findByUser(user); // findByUser() 사용
         return bookmarks.stream()
-              .map(Bookmark::getStudy) // Bookmark에서 Study로 매핑
+              .map(BookmarkDTO::new)
               .collect(Collectors.toList());
     }
 
+    //북마크 추가
     public void addBookmark(Long userId, Long postId) {
         User user = userRepository.findById(userId)
               .orElseThrow(() -> new RuntimeException("User not found"));

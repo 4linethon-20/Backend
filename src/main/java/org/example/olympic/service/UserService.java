@@ -3,22 +3,26 @@ package org.example.olympic.service;
 
 import org.example.olympic.domain.Subject;
 import org.example.olympic.domain.User;
+import org.example.olympic.dto.RegisterDTO;
 import org.example.olympic.dto.StudyDTO;
 import org.example.olympic.dto.UserDTO;
 import org.example.olympic.repository.SubjectRepository;
 import org.example.olympic.repository.UserRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,7 +53,7 @@ public class UserService implements UserDetailsService {
    }
 
    //회원가입 기능
-   public User registerUser(UserDTO userDto){
+   public User registerUser(RegisterDTO userDto, MultipartFile profileImage){
       if(userRepository.existsByUserId(userDto.getUserId())){
          System.out.println("already registered: " );
          throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User ID already exists.");
@@ -58,7 +62,7 @@ public class UserService implements UserDetailsService {
       User user = new User();
       user.setUserId(userDto.getUserId());
       user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-      user.setProfileImageUrl(userDto.getProfileImage());
+      user.setProfileImageUrl(saveProfileImage(profileImage));
       user.setNickname(userDto.getNickname());
 
       List<Subject> subjects = userDto.getSubjects().stream()
@@ -67,6 +71,29 @@ public class UserService implements UserDetailsService {
 
       return userRepository.save(user);
    }
+
+   public String saveProfileImage(MultipartFile profileImage) {
+      if (profileImage.isEmpty()) {
+         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Profile image is required.");
+      }
+
+      try {
+         // 파일 저장 경로 설정
+         String uploadDir = "uploads/profile-images/";
+         String fileName = UUID.randomUUID().toString() + "_" + profileImage.getOriginalFilename();
+         Path filePath = Paths.get(uploadDir, fileName);
+
+         // 파일 저장
+         Files.createDirectories(filePath.getParent()); // 디렉토리 생성
+         profileImage.transferTo(filePath.toFile());
+
+         // 저장된 파일의 경로 반환 (예: http://localhost:8080/uploads/profile-images/{fileName})
+         return "/uploads/profile-images/" + fileName;
+      } catch (IOException e) {
+         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save profile image.");
+      }
+   }
+
 
    // 과목 검색
    public List<Subject> searchSubjects(String keyword) {

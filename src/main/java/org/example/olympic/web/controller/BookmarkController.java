@@ -1,12 +1,9 @@
 package org.example.olympic.web.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.RequiredArgsConstructor;
-import org.example.olympic.domain.Study;
 import org.example.olympic.domain.User;
+import org.example.olympic.dto.BookmarkDTO;
 import org.example.olympic.repository.UserRepository;
 import org.example.olympic.service.BookmarkService;
-import org.example.olympic.web.dto.StudyResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +24,12 @@ public class BookmarkController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Study>> getBookmarks(Authentication authentication) {
+    public ResponseEntity<List<BookmarkDTO>> getBookmarks(Authentication authentication) {
         String userId = authentication.getName();
         User user = userRepository.findByUserId(userId)
               .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<Study> bookmarks = bookmarkService.getUserBookmarks(user.getId());
+        List<BookmarkDTO> bookmarks = bookmarkService.getUserBookmarks(user.getId());
         return ResponseEntity.ok(bookmarks);
     }
     // 북마크 추가

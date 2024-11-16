@@ -26,7 +26,7 @@ public class Study extends BaseEntity {
     @Column(nullable = false, length = 60)
     private String title;
 
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -48,4 +48,7 @@ public class Study extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")  // 외래키 컬럼 이름 설정
     private Subject subject;
+
+    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Bookmark> bookmarks = new ArrayList<>();
 }
